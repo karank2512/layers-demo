@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { loadResults, prettyDate, prettyName, prettyUnit, type TrendEntry } from "../../../lib/data";
+import {
+  capitalize,
+  loadResults,
+  prettyDate,
+  prettyName,
+  prettyUnit,
+  shortDate,
+  type TrendEntry,
+} from "../../../lib/data";
 
 export function generateStaticParams() {
   const results = loadResults();
@@ -8,16 +16,61 @@ export function generateStaticParams() {
   );
 }
 
-function Delta({ trend }: { trend: TrendEntry | undefined }) {
-  if (!trend) return <td className="num"><span className="delta flat">-</span></td>;
-  const cls = trend.deltaB > 0 ? "up" : trend.deltaB < 0 ? "down" : "flat";
+/**
+ * Two-visit slope glyph. Direction only - rising and falling use the same
+ * neutral ink, because a slope is never a judgment about health.
+ */
+function Spark({ delta }: { delta: number }) {
+  const top = 3;
+  const bottom = 13;
+  const y1 = delta > 0 ? bottom : delta < 0 ? top : 8;
+  const y2 = delta > 0 ? top : delta < 0 ? bottom : 8;
+  return (
+    <svg
+      className="spark"
+      width="40"
+      height="16"
+      viewBox="0 0 40 16"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <line x1="3" y1={y1} x2="37" y2={y2} stroke="var(--faint)" strokeWidth="1.4" />
+      <circle cx="3" cy={y1} r="2" fill="var(--paper)" stroke="var(--muted)" strokeWidth="1.4" />
+      <circle cx="37" cy={y2} r="2" fill="var(--muted)" />
+    </svg>
+  );
+}
+
+/**
+ * Trend line with the only two real points labeled: the prior visit's date
+ * and recorded value, then the delta to this visit. No invented history.
+ */
+function TrendLine({
+  trend,
+  isFirstVisit,
+}: {
+  trend: TrendEntry | undefined;
+  isFirstVisit: boolean;
+}) {
+  if (!trend) {
+    return (
+      <span className="trend-none">
+        {isFirstVisit ? "First recorded" : "No comparable prior"}
+      </span>
+    );
+  }
   const arrow = trend.deltaB > 0 ? "\u2191" : trend.deltaB < 0 ? "\u2193" : "";
   return (
-    <td className="num">
-      <span className={`delta ${cls}`}>
+    <>
+      <Spark delta={trend.deltaB} />
+      <span className="trend-prior">
+        {shortDate(trend.visitA)}: {trend.valueA} {prettyUnit(trend.unit)}
+      </span>
+      <span className="trend-arrow">&rarr;</span>
+      <span className="trend-delta">
         {arrow} {Math.abs(trend.deltaB)} {prettyUnit(trend.unitB)}
       </span>
-    </td>
+    </>
   );
 }
 
@@ -77,85 +130,101 @@ export default async function Report({
   return (
     <main>
       <Link className="back" href="/">&larr; All members</Link>
-      <p className="wordmark">Meridian Health - synthetic demo</p>
-      <h1>{m.firstName}</h1>
-      <p className="visit-date">{prettyDate(v.visitDate)}</p>
-      {isFirstVisit ? (
-        <p className="baseline-note">First visit - no prior baseline to compare against.</p>
-      ) : (
-        <p className="baseline-note">Compared with {prettyDate(m.visits[0].visitDate)}.</p>
-      )}
 
-      {v.flags.length > 0 && (
-        <div className="held">
-          <p className="held-title">Being checked by the team</p>
-          <ul>
-            {v.flags.map((f, i) => (
-              <li key={i}>{memberPhrase(f)}</li>
+      <div className="report-layout">
+        <aside className="report-side">
+          <p className="kicker">Member report</p>
+          <p className="side-name">{m.firstName}</p>
+          <p className="side-date">{prettyDate(v.visitDate)}</p>
+          <p className="side-baseline">
+            {isFirstVisit
+              ? "First visit - no prior baseline."
+              : `Compared with ${prettyDate(m.visits[0].visitDate)}.`}
+          </p>
+
+          <ul className="side-nav">
+            {v.domains.map((d) => (
+              <li key={d.domain}>
+                <a href={`#domain-${d.domain}`}>
+                  {capitalize(d.domain)}
+                  <span className="side-count">{d.measurements.length}</span>
+                </a>
+              </li>
             ))}
           </ul>
-        </div>
-      )}
 
-      {v.domains.map((d) => (
-        <section key={d.domain}>
-          <h2>{d.domain}</h2>
-          <table>
-            <tbody>
+          {v.flags.length > 0 && (
+            <a className="side-held" href="#being-checked">
+              {v.flags.length} {v.flags.length === 1 ? "item" : "items"} being checked by
+              the team
+            </a>
+          )}
+        </aside>
+
+        <div>
+          {v.flags.length > 0 && (
+            <div className="held" id="being-checked">
+              <p className="held-title">Being checked by the team</p>
+              <ul>
+                {v.flags.map((f, i) => (
+                  <li key={i}>{memberPhrase(f)}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {v.domains.map((d) => (
+            <section className="domain" id={`domain-${d.domain}`} key={d.domain}>
+              <div className="domain-head">
+                <span className="domain-name">{capitalize(d.domain)}</span>
+                <span className="domain-count">
+                  {d.measurements.length} measurements
+                </span>
+              </div>
               {d.measurements.map((meas, i) => {
                 const held = unresolved.get(meas.name);
                 if (held && renderedHeld.has(d.domain + meas.name)) return null;
                 if (held) renderedHeld.add(d.domain + meas.name);
+                const trend = held ? undefined : trendFor(meas.name);
                 return (
-                  <tr key={i}>
-                    <td className="measure-name">{prettyName(meas.name)}</td>
-                    <td className="num">
-                      {held?.type === "conflicting_duplicate" && held.values ? (
-                        <>
-                          <span className="measure-value">
-                            {held.values.join(" / ")}
-                          </span>
-                          <span className="measure-unit">{prettyUnit(meas.unit)}</span>
-                          <span className="tag">being checked</span>
-                        </>
-                      ) : held ? (
-                        <>
-                          <span className="measure-value">{meas.value}</span>
-                          <span className="measure-unit">{prettyUnit(meas.unit)}</span>
-                          <span className="tag">being checked</span>
-                        </>
+                  <div className="measure" key={i}>
+                    <span className="measure-name">{prettyName(meas.name)}</span>
+                    <span className="measure-value-wrap">
+                      <span className="measure-value">
+                        {held?.type === "conflicting_duplicate" && held.values
+                          ? held.values.join(" / ")
+                          : meas.value}
+                      </span>
+                      <span className="measure-unit">{prettyUnit(meas.unit)}</span>
+                      {held && <span className="tag">being checked</span>}
+                    </span>
+                    <span className="measure-trend">
+                      {held ? (
+                        <span className="trend-none">Under review</span>
                       ) : (
-                        <>
-                          <span className="measure-value">{meas.value}</span>
-                          <span className="measure-unit">{prettyUnit(meas.unit)}</span>
-                        </>
+                        <TrendLine trend={trend} isFirstVisit={isFirstVisit} />
                       )}
-                    </td>
-                    {held ? (
-                      <td className="num"><span className="delta flat">-</span></td>
-                    ) : (
-                      <Delta trend={trendFor(meas.name)} />
-                    )}
-                  </tr>
+                    </span>
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
-          {d.measurements.some((meas) => trendFor(meas.name)?.converted) && (
-            <p className="categorical">
-              Some values were converted to compare across visits; the original units are
-              kept as recorded.
-            </p>
-          )}
-          {Object.keys(d.categorical).length > 0 && (
-            <p className="categorical">
-              {Object.entries(d.categorical)
-                .map(([k, val]) => `${prettyName(k)}: ${val}`)
-                .join(" - ")}
-            </p>
-          )}
-        </section>
-      ))}
+              {d.measurements.some((meas) => trendFor(meas.name)?.converted) && (
+                <p className="categorical">
+                  Some values were converted to compare across visits; the original units
+                  are kept as recorded.
+                </p>
+              )}
+              {Object.keys(d.categorical).length > 0 && (
+                <p className="categorical">
+                  {Object.entries(d.categorical)
+                    .map(([k, val]) => `${prettyName(k)}: ${val}`)
+                    .join(" - ")}
+                </p>
+              )}
+            </section>
+          ))}
+        </div>
+      </div>
 
       <footer>
         Synthetic demo data. Values describe a fictional person; trends are arithmetic on

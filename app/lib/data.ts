@@ -84,6 +84,19 @@ export function prettyName(name: string): string {
     .replace(/^cgm /, "CGM ");
 }
 
+export function shortDate(iso: string): string {
+  const [y, m, d] = iso.split("-").map(Number);
+  const months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  ];
+  return `${months[m - 1]} ${d}`;
+}
+
+export function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
 export function prettyDate(iso: string): string {
   const [y, m, d] = iso.split("-").map(Number);
   const months = [
