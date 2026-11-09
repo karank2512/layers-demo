@@ -23,8 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <nav className="band-nav">
               <Link href="/">Members</Link>
               <Link href="/queue">
-                Review queue
-                {pending > 0 && <span className="band-count">{pending}</span>}
+                Review queue{pending > 0 && <span className="band-count">({pending})</span>}
               </Link>
             </nav>
             <span className="band-tag">Synthetic demo data</span>

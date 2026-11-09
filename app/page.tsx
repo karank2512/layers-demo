@@ -13,7 +13,6 @@ export default function Home() {
   return (
     <main>
       <div className="page-head">
-        <p className="kicker">Visit results</p>
         <h1>Member results, with unresolved readings held for review.</h1>
         <p className="lede">
           Six fictional members; five have two quarterly visits, one has just had their
@@ -51,13 +50,12 @@ export default function Home() {
           <span className="queue-go">Review &rarr;</span>
         </Link>
       ) : (
-        <div className="queue-banner is-empty">
+        <div className="queue-banner">
           <span>
             <strong>Staff review queue is empty.</strong>
             <br />
             Nothing needs a human look.
           </span>
-          <span className="queue-go" />
         </div>
       )}
 
@@ -65,18 +63,20 @@ export default function Home() {
         <h2>Members</h2>
       </div>
 
-      <ul className="member-grid">
+      <ul className="member-rows">
         {results.members.map((m) => {
           const heldCount = heldByMember.get(m.id) ?? 0;
           const latest = m.visits[m.visits.length - 1];
           return (
-            <li className="member-card" key={m.id}>
-              <Link className="member-name" href={`/report/${m.id}/${latest.visitDate}`}>
-                {m.firstName}
-              </Link>
-              <span className="member-meta">
-                {m.visits.length === 1 ? "1 visit" : `${m.visits.length} visits`}
-                {" · "}latest {shortDate(latest.visitDate)}
+            <li className="member-row" key={m.id}>
+              <span>
+                <Link className="member-name" href={`/report/${m.id}/${latest.visitDate}`}>
+                  {m.firstName}
+                </Link>
+                <span className="member-meta">
+                  {m.visits.length === 1 ? "1 visit" : `${m.visits.length} visits`}
+                  {" · "}latest {shortDate(latest.visitDate)}
+                </span>
               </span>
               <span className="member-visits">
                 {m.visits.map((v, j) => (
@@ -88,8 +88,7 @@ export default function Home() {
                   </span>
                 ))}
               </span>
-              <span className="member-status">
-                <span className={`status-dot${heldCount > 0 ? " pending" : ""}`} />
+              <span className={`member-status${heldCount > 0 ? " pending" : ""}`}>
                 {heldCount > 0
                   ? `${heldCount} ${heldCount === 1 ? "item" : "items"} being checked`
                   : "All records reconciled"}

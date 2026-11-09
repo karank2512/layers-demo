@@ -54,7 +54,6 @@ export default function Queue() {
       <Link className="back" href="/">
         &larr; All members
       </Link>
-      <p className="kicker">Staff view</p>
       <h1>Review queue</h1>
       <p className="lede">
         Records the pipeline could not reconcile on its own. Each item names the
@@ -70,7 +69,6 @@ export default function Queue() {
             const copy = issueCopy(f.type);
             return (
               <li className="queue-item" key={i}>
-                <span className="queue-item-index">{String(i + 1).padStart(2, "0")}</span>
                 <span>
                   <p className="queue-item-meta">
                     {nameOf.get(f.memberId) ?? f.memberId} &middot;{" "}

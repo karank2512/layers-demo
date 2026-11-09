@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { deriveVisitProvenance, type DomainState } from "../../../../src/engine/provenance";
 import {
   capitalize,
   loadResults,
@@ -66,13 +67,27 @@ function TrendLine({
       <span className="trend-prior">
         {shortDate(trend.visitA)}: {trend.valueA} {prettyUnit(trend.unit)}
       </span>
-      <span className="trend-arrow">&rarr;</span>
+      <span aria-hidden="true">&rarr;</span>
       <span className="trend-delta">
         {arrow} {Math.abs(trend.deltaB)} {prettyUnit(trend.unitB)}
       </span>
     </>
   );
 }
+
+const STATE_TEXT: Record<DomainState, string> = {
+  received: "Received",
+  "under-review": "Under review",
+  incomplete: "Section missing",
+  missing: "Not received",
+};
+
+const STATE_SUMMARY: Record<DomainState, string> = {
+  received: "received",
+  "under-review": "under review",
+  incomplete: "section missing",
+  missing: "not received",
+};
 
 function memberPhrase(f: { type: string; measurement: string | null }): string {
   const what = f.measurement ? prettyName(f.measurement) : null;
@@ -87,6 +102,7 @@ function memberPhrase(f: { type: string; measurement: string | null }): string {
     case "unknown_device":
       return "One instrument file had unrecognized version information - the team is confirming it.";
     case "missing_section":
+      return "Part of this visit's export is incomplete - the team is checking what is missing.";
     case "missing_file":
       return "Part of this visit's data has not arrived yet - the team is following up.";
     default:
@@ -116,6 +132,32 @@ export default async function Report({
   const trendFor = (name: string) =>
     m.trends.find((t) => t.measurement === name && t.visitB === v.visitDate);
 
+  // Expected domains come from what this member's own visits render; the
+  // state of each is derived from recorded flags, never assumed complete.
+  const expectedDomains = [
+    ...new Set(m.visits.flatMap((vv) => vv.domains.map((d) => d.domain))),
+  ];
+  const provenance = deriveVisitProvenance(expectedDomains, v);
+  const stateCounts = new Map<DomainState, number>();
+  for (const p of provenance) {
+    stateCounts.set(p.state, (stateCounts.get(p.state) ?? 0) + 1);
+  }
+  const provSummary = [...stateCounts.entries()]
+    .map(([state, n]) => `${n} ${STATE_SUMMARY[state]}`)
+    .join(", ");
+  const provenanceRows = (
+    <ul className="side-rows">
+      {provenance.map((p) => (
+        <li key={p.domain}>
+          {capitalize(p.domain)}
+          <span className={`side-state${p.state === "received" ? "" : " pending"}`}>
+            {STATE_TEXT[p.state]}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+
   // A flagged measurement renders once even if the raw export repeated it.
   const renderedHeld = new Set<string>();
 
@@ -133,7 +175,6 @@ export default async function Report({
 
       <div className="report-layout">
         <aside className="report-side">
-          <p className="kicker">Member report</p>
           <p className="side-name">{m.firstName}</p>
           <p className="side-date">{prettyDate(v.visitDate)}</p>
           <p className="side-baseline">
@@ -142,19 +183,29 @@ export default async function Report({
               : `Compared with ${prettyDate(m.visits[0].visitDate)}.`}
           </p>
 
-          <ul className="side-nav">
-            {v.domains.map((d) => (
-              <li key={d.domain}>
-                <a href={`#domain-${d.domain}`}>
-                  {capitalize(d.domain)}
-                  <span className="side-count">{d.measurements.length}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
+          <div className="side-block side-prov-full">
+            <p className="side-block-title">This visit</p>
+            {provenanceRows}
+          </div>
+          <details className="side-block side-prov-compact">
+            <summary>This visit: {provSummary}</summary>
+            {provenanceRows}
+          </details>
+
+          <div className="side-block side-nav-block">
+            <p className="side-block-title">Jump to</p>
+            <ul className="side-rows side-nav-rows">
+              {v.domains.map((d) => (
+                <li key={d.domain}>
+                  <a href={`#domain-${d.domain}`}>{capitalize(d.domain)}</a>
+                  <span className="side-state">{d.measurements.length}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {v.flags.length > 0 && (
-            <a className="side-held" href="#being-checked">
+            <a className="side-held side-held-desktop" href="#being-checked">
               {v.flags.length} {v.flags.length === 1 ? "item" : "items"} being checked by
               the team
             </a>
@@ -196,7 +247,7 @@ export default async function Report({
                           : meas.value}
                       </span>
                       <span className="measure-unit">{prettyUnit(meas.unit)}</span>
-                      {held && <span className="tag">being checked</span>}
+                      {held && <span className="tag">Being checked</span>}
                     </span>
                     <span className="measure-trend">
                       {held ? (
