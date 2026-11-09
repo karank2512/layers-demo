@@ -11,9 +11,9 @@ instrument exports, runs deterministic data-quality checks, computes
 visit-over-visit trends, renders a member-facing report, and gives staff a
 review queue with the exact operational reason for anything unresolved.
 
-All data is invented. Six fictional members, two quarterly visits each. The
-pipeline checks data integrity - provenance, completeness, units, duplicates,
-timestamps, trends. It deliberately makes no health judgments: no reference
+All data is invented. Six fictional members; five have two quarterly visits,
+one has just a first visit. The pipeline checks data integrity - provenance,
+completeness, units, duplicates, timestamps, trends. It deliberately makes no health judgments: no reference
 ranges, no "normal/abnormal", no diagnoses, no automatic release decisions. A
 person decides anything the checks cannot reconcile.
 
@@ -50,8 +50,10 @@ Open `out/index.html` with any static file server (for example
   measurement with conflicting values goes to the review queue.
 - **Timestamps** - a record cannot be measured after its own export was
   produced.
-- **Trends** - consecutive-visit deltas per measurement, in the first visit's
-  units, computed from recorded values.
+- **Trends** - consecutive-visit deltas per measurement, computed from
+  recorded values and shown in the displayed visit's units; a measurement
+  flagged with conflicting values or a timestamp problem produces no trend
+  until a person resolves it.
 
 The fixture set plants one example of each problem (see
 `spec/expected_flags.json`) plus clean controls. The staff review queue should
