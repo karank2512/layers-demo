@@ -1,0 +1,82 @@
+{
+  "note": "Spec, not implementation: every file NOT listed here is expected clean.",
+  "cases": [
+    {
+      "file": "M-001/2026-11-03/metabolic.json",
+      "flags": [
+        {
+          "type": "unit_mismatch_vs_prior",
+          "unit_system": "si",
+          "prior_unit_system": "metric",
+          "measurements": [
+            "fasting_glucose",
+            "total_cholesterol",
+            "hdl",
+            "ldl",
+            "triglycerides"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "M-002/2026-08-04/body.csv",
+      "flags": []
+    },
+    {
+      "file": "M-002/2026-08-04/hair.json",
+      "flags": []
+    },
+    {
+      "file": "M-002/2026-08-04/metabolic.json",
+      "flags": []
+    },
+    {
+      "file": "M-002/2026-08-04/skin.json",
+      "flags": []
+    },
+    {
+      "file": "M-002/2026-11-04/metabolic.json",
+      "flags": [
+        {
+          "type": "missing_section",
+          "domain": "metabolic",
+          "section": "panel"
+        }
+      ]
+    },
+    {
+      "file": "M-003/2026-08-05/body.csv",
+      "flags": [
+        {
+          "type": "conflicting_duplicate",
+          "measurement": "weight",
+          "values": [
+            66.8,
+            68.5
+          ]
+        }
+      ]
+    },
+    {
+      "file": "M-004/2026-11-06/hair.json",
+      "flags": [
+        {
+          "type": "unknown_export_version",
+          "device_id": "HAIRSCAN-01",
+          "export_version": "9.9.9-unknown"
+        }
+      ]
+    },
+    {
+      "file": "M-005/2026-08-07/skin.json",
+      "flags": [
+        {
+          "type": "record_after_export",
+          "measurement": "uv_spots_count",
+          "measured_at": "2026-08-07T12:30:00",
+          "exported_at": "2026-08-07T11:05:00"
+        }
+      ]
+    }
+  ]
+}

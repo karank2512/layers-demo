@@ -1,0 +1,73 @@
+{
+  "assertions": [
+    {
+      "member": "M-001",
+      "visits": [
+        "2026-08-03",
+        "2026-11-03"
+      ],
+      "measurement": "hydration_score",
+      "expected_delta": 4.0,
+      "unit": "score"
+    },
+    {
+      "member": "M-002",
+      "visits": [
+        "2026-08-04",
+        "2026-11-04"
+      ],
+      "measurement": "hydration_score",
+      "expected_delta": 4.0,
+      "unit": "score"
+    },
+    {
+      "member": "M-003",
+      "visits": [
+        "2026-08-05",
+        "2026-11-05"
+      ],
+      "measurement": "hydration_score",
+      "expected_delta": 4.0,
+      "unit": "score"
+    },
+    {
+      "member": "M-004",
+      "visits": [
+        "2026-08-06",
+        "2026-11-06"
+      ],
+      "measurement": "hydration_score",
+      "expected_delta": 4.0,
+      "unit": "score"
+    },
+    {
+      "member": "M-005",
+      "visits": [
+        "2026-08-07",
+        "2026-11-07"
+      ],
+      "measurement": "hydration_score",
+      "expected_delta": 4.0,
+      "unit": "score"
+    },
+    {
+      "member": "M-001",
+      "visits": [
+        "2026-08-03",
+        "2026-11-03"
+      ],
+      "measurement": "fasting_glucose",
+      "visit_a": {
+        "value": 83,
+        "unit": "mg/dL"
+      },
+      "visit_b": {
+        "value": 4.55,
+        "unit": "mmol/L"
+      },
+      "expected_delta": -1.03,
+      "unit": "mg/dL",
+      "note": "delta computed after verified conversion; original units preserved in display"
+    }
+  ]
+}

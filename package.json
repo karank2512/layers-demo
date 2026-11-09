@@ -1,0 +1,29 @@
+{
+  "name": "layers-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "demo": "tsc -p tsconfig.engine.json && node dist-engine/engine/cli.js fixtures data/results.json",
+    "test": "tsc -p tsconfig.engine.json && node --test dist-engine/tests/*.test.js",
+    "build": "npm run demo && next build",
+    "dev": "next dev"
+  },
+  "dependencies": {
+    "next": "15.5.29",
+    "react": "19.1.2",
+    "react-dom": "19.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "5.9.3"
+  },
+  "overrides": {
+    "postcss": "^8.5.23"
+  }
+}

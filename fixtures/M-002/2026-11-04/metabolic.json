@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "device_id": "METAB-01",
+    "device_model": "PanelBridge",
+    "export_version": "4.5.1",
+    "exported_at": "2026-11-04T11:05:00",
+    "unit_system": "metric"
+  },
+  "sections": {
+    "cgm": {
+      "device_id": "CGM-01",
+      "device_model": "GlucoTrace",
+      "export_version": "1.1.3",
+      "measurements": [
+        {
+          "name": "cgm_mean_glucose",
+          "value": 91,
+          "unit": "mg/dL",
+          "measured_at": "2026-11-04T09:30:00"
+        },
+        {
+          "name": "cgm_time_in_range",
+          "value": 82,
+          "unit": "pct",
+          "measured_at": "2026-11-04T09:34:00"
+        },
+        {
+          "name": "cgm_variability",
+          "value": 16.3,
+          "unit": "pct",
+          "measured_at": "2026-11-04T09:38:00"
+        }
+      ]
+    }
+  }
+}

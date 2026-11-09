@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "device_id": "SKINSCAN-01",
+    "device_model": "DermaView Pro",
+    "export_version": "2.2.0",
+    "exported_at": "2026-08-04T11:05:00",
+    "unit_system": "metric"
+  },
+  "measurements": [
+    {
+      "name": "hydration_score",
+      "value": 68,
+      "unit": "score",
+      "measured_at": "2026-08-04T09:30:00"
+    },
+    {
+      "name": "elasticity_score",
+      "value": 64,
+      "unit": "score",
+      "measured_at": "2026-08-04T09:34:00"
+    },
+    {
+      "name": "pigmentation_evenness",
+      "value": 72,
+      "unit": "score",
+      "measured_at": "2026-08-04T09:38:00"
+    },
+    {
+      "name": "fine_lines_score",
+      "value": 56,
+      "unit": "score",
+      "measured_at": "2026-08-04T09:42:00"
+    },
+    {
+      "name": "redness_index",
+      "value": 22,
+      "unit": "index",
+      "measured_at": "2026-08-04T09:46:00"
+    },
+    {
+      "name": "uv_spots_count",
+      "value": 32,
+      "unit": "count",
+      "measured_at": "2026-08-04T09:50:00"
+    },
+    {
+      "name": "pore_visibility",
+      "value": 51,
+      "unit": "score",
+      "measured_at": "2026-08-04T09:54:00"
+    },
+    {
+      "name": "facial_symmetry_score",
+      "value": 86.5,
+      "unit": "score",
+      "measured_at": "2026-08-04T09:58:00"
+    },
+    {
+      "name": "lip_moisture",
+      "value": 60,
+      "unit": "score",
+      "measured_at": "2026-08-04T10:02:00"
+    },
+    {
+      "name": "texture_smoothness",
+      "value": 66,
+      "unit": "score",
+      "measured_at": "2026-08-04T10:06:00"
+    }
+  ],
+  "categorical": {
+    "color_undertone": "cool",
+    "color_season": "winter"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "device_id": "HAIRSCAN-01",
+    "device_model": "FollicleScope",
+    "export_version": "1.4.0",
+    "exported_at": "2026-11-05T11:05:00",
+    "unit_system": "metric"
+  },
+  "measurements": [
+    {
+      "name": "scalp_density",
+      "value": 178,
+      "unit": "count_per_cm2",
+      "measured_at": "2026-11-05T09:30:00"
+    },
+    {
+      "name": "fiber_diameter",
+      "value": 63.9,
+      "unit": "um",
+      "measured_at": "2026-11-05T09:34:00"
+    },
+    {
+      "name": "breakage_index",
+      "value": 27,
+      "unit": "index",
+      "measured_at": "2026-11-05T09:38:00"
+    },
+    {
+      "name": "shine_score",
+      "value": 72,
+      "unit": "score",
+      "measured_at": "2026-11-05T09:42:00"
+    },
+    {
+      "name": "scalp_redness_index",
+      "value": 18,
+      "unit": "index",
+      "measured_at": "2026-11-05T09:46:00"
+    }
+  ]
+}

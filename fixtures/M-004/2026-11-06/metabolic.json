@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "device_id": "METAB-01",
+    "device_model": "PanelBridge",
+    "export_version": "4.5.1",
+    "exported_at": "2026-11-06T11:05:00",
+    "unit_system": "metric"
+  },
+  "sections": {
+    "panel": {
+      "measurements": [
+        {
+          "name": "fasting_glucose",
+          "value": 88,
+          "unit": "mg/dL",
+          "measured_at": "2026-11-06T09:30:00"
+        },
+        {
+          "name": "total_cholesterol",
+          "value": 180,
+          "unit": "mg/dL",
+          "measured_at": "2026-11-06T09:34:00"
+        },
+        {
+          "name": "hdl",
+          "value": 57,
+          "unit": "mg/dL",
+          "measured_at": "2026-11-06T09:38:00"
+        },
+        {
+          "name": "ldl",
+          "value": 108,
+          "unit": "mg/dL",
+          "measured_at": "2026-11-06T09:42:00"
+        },
+        {
+          "name": "triglycerides",
+          "value": 94,
+          "unit": "mg/dL",
+          "measured_at": "2026-11-06T09:46:00"
+        },
+        {
+          "name": "hba1c",
+          "value": 5.33,
+          "unit": "pct",
+          "measured_at": "2026-11-06T09:50:00"
+        }
+      ]
+    },
+    "cgm": {
+      "device_id": "CGM-01",
+      "device_model": "GlucoTrace",
+      "export_version": "1.1.3",
+      "measurements": [
+        {
+          "name": "cgm_mean_glucose",
+          "value": 95,
+          "unit": "mg/dL",
+          "measured_at": "2026-11-06T09:30:00"
+        },
+        {
+          "name": "cgm_time_in_range",
+          "value": 85,
+          "unit": "pct",
+          "measured_at": "2026-11-06T09:34:00"
+        },
+        {
+          "name": "cgm_variability",
+          "value": 17.9,
+          "unit": "pct",
+          "measured_at": "2026-11-06T09:38:00"
+        }
+      ]
+    }
+  }
+}
